@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 
+from celery.schedules import crontab
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
@@ -131,9 +133,28 @@ STATIC_URL = '/static/'
 
 # Django REST Framework
 # https://www.django-rest-framework.org/
+
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
         'api.renderers.ApiRenderer',
     ],
     'EXCEPTION_HANDLER': 'api.renderers.custom_exception_handler'
+}
+
+
+# Celery settings
+# https://docs.celeryproject.org/en/stable/django/first-steps-with-django.html
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_IMPORTS = ('account.tasks',)
+
+CELERY_BEAT_SCHEDULE = {
+    'account_balance_subtract': {
+        'task': 'account.tasks.call_account_balance_subtract',
+        'schedule': crontab(minute='*/10')
+    },
 }
