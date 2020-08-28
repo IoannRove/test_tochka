@@ -1,4 +1,6 @@
 from rest_framework import serializers
+
+from .exceptions import HoldOverBalanceException
 from .models import Account
 
 
@@ -31,5 +33,8 @@ class SubtractBalanceSerializer(serializers.ModelSerializer):
         fields = ('hold',)
 
     def update(self, instance, validated_data):
+        if instance.balance - instance.hold - validated_data.get('hold', 0) < 0:
+            raise HoldOverBalanceException()
         instance.hold += validated_data.get('hold', 0)
+        instance.save()
         return instance

@@ -1,4 +1,6 @@
 import uuid
+
+from django.core.validators import MinValueValidator
 from django.db import models
 
 
@@ -17,8 +19,8 @@ class Account(models.Model):
         'Уникальный номер абонента',
         primary_key=True, default=uuid.uuid4, editable=False)
     fio = models.CharField('ФИО абонента', max_length=100)
-    balance = models.IntegerField('текущий баланс на счете')
-    hold = models.IntegerField('холды на счете')
+    balance = models.IntegerField('текущий баланс на счете', validators=(MinValueValidator(0),))
+    hold = models.IntegerField('холды на счете', validators=(MinValueValidator(0),))
     status = models.BooleanField('статус счета', default=True)
 
     class Meta:
