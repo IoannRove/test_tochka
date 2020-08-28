@@ -127,3 +127,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# Django REST Framework
+# https://www.django-rest-framework.org/
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'api.renderers.ApiRenderer',
+    ],
+    'EXCEPTION_HANDLER': 'api.renderers.custom_exception_handler'
+}
