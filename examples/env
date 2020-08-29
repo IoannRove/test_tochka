@@ -1,0 +1,14 @@
+# Django settings
+DEBUG=TRUE
+
+# Database settings
+SQL_ENGINE=django.db.backends.postgresql_psycopg2
+SQL_DATABASE_NAME=test_tochka
+SQL_USER=test_a7
+SQL_PASSWORD=test_a7
+SQL_HOST=localhost
+SQL_PORT=5432
+
+# Celery settings
+CELERY_BROKER_URL=redis://localhost:6379/0
+CELERY_RESULT_BACKEND=redis://localhost:6379/0
