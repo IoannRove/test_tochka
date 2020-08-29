@@ -1,0 +1,51 @@
+version: '3.7'
+
+services:
+  db:
+    image: postgres:alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=${SQL_DATABASE_NAME}
+      - POSTGRES_USER=${SQL_USER}
+      - POSTGRES_PASSWORD=${SQL_PASSWORD}
+
+  web:
+    container_name: dev-web-tochka
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    command: python /usr/src/tochka-proj/tochka/manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/usr/src/tochka-proj
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+
+  redis:
+    image: "redis:alpine"
+
+  celery:
+    build: .
+    command: celery -A /usr/src/tochka-proj/tochka/config worker -l info
+    volumes:
+      - .:/usr/src/tochka-proj/
+    depends_on:
+      - db
+      - redis
+
+  celery-beat:
+    build: .
+    command: celery -A /usr/src/tochka-proj/tochka/config beat -l info
+    volumes:
+      - .:/usr/src/tochka-proj/
+    depends_on:
+      - db
+      - redis
+volumes:
+  postgres_data:
+# TIP: docker-compose automatically adds folder name as prefix
+# to volumes' names. It could cause problems if you change folder name
+# to control this you can run docker-compose with -p flag
+# example: docker-compose -p "your_prefix" up
