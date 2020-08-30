@@ -4,7 +4,7 @@ from .services import subtract_account_balance, subtract_all_accounts_balance
 
 
 @shared_task
-def call_account_balance_subtract(account_uuid):
+def call_subtract_account_balance(account_uuid):
     subtract_account_balance(account_uuid)
 
 

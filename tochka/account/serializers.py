@@ -1,10 +1,12 @@
-from datetime import datetime, timedelta
+# from datetime import datetime, timedelta
 
 from rest_framework import serializers
 
 from .exceptions import HoldOverBalanceException
 from .models import Account
-from .tasks import call_account_balance_subtract
+
+
+# from .tasks import call_subtract_account_balance
 
 
 class AccountListSerializer(serializers.ModelSerializer):
@@ -39,7 +41,7 @@ class SubtractBalanceSerializer(serializers.ModelSerializer):
         if instance.balance - instance.hold - validated_data.get('hold', 0) < 0:
             raise HoldOverBalanceException()
         print(instance, type(instance))
-        call_account_balance_subtract.apply_async((instance.uuid,), eta=datetime.utcnow() + timedelta(minutes=10))
+        # call_subtract_account_balance.apply_async((instance.uuid,), eta=datetime.utcnow() + timedelta(minutes=10))
         instance.hold += validated_data.get('hold', 0)
         instance.save()
         return instance
