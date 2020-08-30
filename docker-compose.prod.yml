@@ -10,25 +10,33 @@ services:
       - POSTGRES_USER=${SQL_USER}
       - POSTGRES_PASSWORD=${SQL_PASSWORD}
 
+  nginx:
+    build: ./nginx
+    ports:
+      - 1337:80
+      - 5555:5555
+    depends_on:
+      - web
+
   web:
     container_name: dev-web-tochka
     build:
       context: ./
-      dockerfile: Dockerfile
-    command: python /usr/src/tochka-proj/tochka/manage.py runserver 0.0.0.0:8000
+      dockerfile: Dockerfile.prod
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - .:/usr/src/tochka-proj
-    ports:
-      - 8000:8000
+    expose:
+      - 8000
     depends_on:
       - db
 
   redis:
-    image: "redis:alpine"
+    image: redis:alpine
 
   celery:
     build: .
-    command: celery -A config worker -l info --logfile=logs/celery.log
+    command: celery -A config worker -l info
     volumes:
       - .:/usr/src/tochka-proj/
     depends_on:
@@ -37,7 +45,7 @@ services:
 
   celery-beat:
     build: .
-    command: celery -A config beat -l info --loglevel=info --logfile=logs/celerybeat.log
+    command: celery -A config beat -l info
     volumes:
       - .:/usr/src/tochka-proj/
     depends_on:

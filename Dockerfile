@@ -5,14 +5,13 @@ ENV PYTHONUNBUFFERED 1
 
 WORKDIR /usr/src/tochka-proj
 
-RUN apk add --update --no-cache postgresql-client
-RUN apk add --update --no-cache --virtual .tmp-build-deps \
-  gcc libc-dev linux-headers postgresql-dev musl-dev zlib zlib-dev
-RUN pip install --upgrade pip
-COPY ./requirements.txt /usr/src/tochka-proj/requirements.txt
-RUN pip install -r requirements.txt
-RUN apk del .tmp-build-deps
+# psycopg2 dependencies
+RUN apk update && apk add postgresql-dev gcc python3-dev musl-dev
 
-COPY ./entrypoint.sh /usr/src/tochka-proj/entrypoint.sh
+RUN pip install --upgrade pip
+COPY ./requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY . .
 
 ENTRYPOINT [ "sh", "./entrypoint.sh" ]
