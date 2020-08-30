@@ -38,8 +38,7 @@ class SubtractBalanceSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         if instance.balance - instance.hold - validated_data.get('hold', 0) < 0:
             raise HoldOverBalanceException()
-        print(instance, type(instance))
-        call_account_balance_subtract.apply_async((instance.uuid,), eta=datetime.utcnow() + timedelta(minutes=10))
+        # call_account_balance_subtract.apply_async((instance.uuid,), eta=datetime.utcnow() + timedelta(minutes=10))
         instance.hold += validated_data.get('hold', 0)
         instance.save()
         return instance
