@@ -9,6 +9,22 @@ services:
       - POSTGRES_DB=${SQL_DATABASE_NAME}
       - POSTGRES_USER=${SQL_USER}
       - POSTGRES_PASSWORD=${SQL_PASSWORD}
+    restart: on-failure:3
+
+  pgbouncer:
+    depends_on:
+      - db
+    restart: on-failure:3
+    image: pgbouncer/pgbouncer
+    environment:
+      - DATABASES_HOST=db
+      - DATABASES_DBNAME=${SQL_DATABASE_NAME}
+      - DATABASE_USER=${SQL_USER}
+      - DATABASE_PASSWORD=${SQL_PASSWORD}
+      - PGBOUNCER_ADMIN_USERS=${SQL_USER}
+      - PGBOUNCER_AUTH_TYPE=md5
+    ports:
+      - 6432:6432
 
   nginx:
     build: ./nginx
@@ -17,6 +33,7 @@ services:
       - 5555:5555
     depends_on:
       - web
+    restart: on-failure:3
 
   web:
     container_name: dev-web-tochka
@@ -30,9 +47,11 @@ services:
       - 8000
     depends_on:
       - db
+    restart: on-failure:3
 
   redis:
     image: redis:alpine
+    restart: on-failure:3
 
   celery:
     build: .
@@ -42,6 +61,7 @@ services:
     depends_on:
       - db
       - redis
+    restart: on-failure:3
 
   celery-beat:
     build: .
@@ -51,6 +71,8 @@ services:
     depends_on:
       - db
       - redis
+    restart: on-failure:3
+
 volumes:
   postgres_data:
 # TIP: docker-compose automatically adds folder name as prefix
