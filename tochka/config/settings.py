@@ -159,8 +159,8 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_IMPORTS = ('account.tasks',)
 
 CELERY_BEAT_SCHEDULE = {
-    'account_balance_subtract': {
-        'task': 'account.tasks.call_subtract_all_accounts_balance',
-        'schedule': crontab(minute='*/10')
-    },
+    # 'account_balance_subtract': {
+    #     'task': 'account.tasks.call_subtract_all_accounts_balance',
+    #     'schedule': crontab(minute='*/10')
+    # },
 }
