@@ -11,11 +11,6 @@ then
     echo "PostgreSQL started"
 fi
 
-export PYTHONPATH="/usr/src/tochka-proj/tochka/:$PYTHONPATH"
-
-echo "run migrations"
-python ./tochka/manage.py migrate
-echo "load test data"
-python ./tochka/manage.py loaddata test_accounts.json
+export PYTHONPATH="/home/app/web/tochka:$PYTHONPATH"
 
 exec "$@"

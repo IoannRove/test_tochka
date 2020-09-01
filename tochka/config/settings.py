@@ -132,7 +132,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = "/staticfiles/"
+STATIC_ROOT = os.path.join(BASE_DIR.parent, "staticfiles")
 
 
 # Django REST Framework
@@ -141,6 +142,7 @@ STATIC_URL = '/static/'
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
         'api.renderers.ApiRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
     ],
     'EXCEPTION_HANDLER': 'api.renderers.custom_exception_handler'
 }

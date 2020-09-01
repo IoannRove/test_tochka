@@ -19,18 +19,24 @@ services:
     environment:
       - DATABASES_HOST=db
       - DATABASES_DBNAME=${SQL_DATABASE_NAME}
-      - DATABASE_USER=${SQL_USER}
-      - DATABASE_PASSWORD=${SQL_PASSWORD}
+      - DATABASES_USER=${SQL_USER}
+      - DATABASES_PASSWORD=${SQL_PASSWORD}
+      - PGBOUNCER_AUTH_FILE=/etc/pgbouncer/userlist/userlist.txt
       - PGBOUNCER_ADMIN_USERS=${SQL_USER}
+      - PGBOUNCER_POOL_MODE=transaction
       - PGBOUNCER_AUTH_TYPE=md5
     ports:
       - 6432:6432
+    volumes:
+      - ./pgbouncer:/etc/pgbouncer/userlist
 
   nginx:
     build: ./nginx
     ports:
       - 1337:80
       - 5555:5555
+    volumes:
+      - static_volume:/home/app/web/staticfiles
     depends_on:
       - web
     restart: on-failure:3
@@ -42,7 +48,7 @@ services:
       dockerfile: Dockerfile.prod
     command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
     volumes:
-      - .:/usr/src/tochka-proj
+      - static_volume:/home/app/web/staticfiles
     expose:
       - 8000
     depends_on:
@@ -57,7 +63,7 @@ services:
     build: .
     command: celery -A config worker -l info
     volumes:
-      - .:/usr/src/tochka-proj/
+      - static_volume:/home/app/web/staticfiles
     depends_on:
       - db
       - redis
@@ -67,7 +73,7 @@ services:
     build: .
     command: celery -A config beat -l info
     volumes:
-      - .:/usr/src/tochka-proj/
+      - static_volume:/home/app/web/staticfiles
     depends_on:
       - db
       - redis
@@ -75,6 +81,7 @@ services:
 
 volumes:
   postgres_data:
+  static_volume:
 # TIP: docker-compose automatically adds folder name as prefix
 # to volumes' names. It could cause problems if you change folder name
 # to control this you can run docker-compose with -p flag
