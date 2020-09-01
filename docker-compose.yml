@@ -27,7 +27,9 @@ services:
     image: "redis:alpine"
 
   celery:
-    build: .
+    build:
+      context: ./
+      dockerfile: Dockerfile
     command: celery -A config worker -l info --logfile=logs/celery.log
     volumes:
       - .:/usr/src/tochka-proj/
@@ -36,7 +38,9 @@ services:
       - redis
 
   celery-beat:
-    build: .
+    build:
+      context: ./
+      dockerfile: Dockerfile
     command: celery -A config beat -l info --loglevel=info --logfile=logs/celerybeat.log
     volumes:
       - .:/usr/src/tochka-proj/

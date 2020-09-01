@@ -11,6 +11,4 @@ then
     echo "PostgreSQL started"
 fi
 
-export PYTHONPATH="/home/app/web/tochka:$PYTHONPATH"
-
 exec "$@"
