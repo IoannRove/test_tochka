@@ -12,10 +12,15 @@ from rest_framework.response import Response
 
 @api_view(['GET'])
 def ping(request):
+    """Принимает GET запрос и отправляет пустой словарь"""
     return Response({})
 
 
 class AccountViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Набор контроллеров для /account_list и /status.
+    В зависимости от url устанавливает сериализатор, который формирует тело ответа.
+    """
     queryset = Account.objects.all()
 
     def get_serializer_class(self):
@@ -32,6 +37,6 @@ class AddSumToBalanceViewSet(viewsets.ModelViewSet):
 
 
 class SubtractBalanceViewSet(viewsets.ModelViewSet):
-    """Добавление суммы на баланс счёта абонента"""
+    """Добавление суммы на холд счёта абонента"""
     queryset = Account.objects.filter()
     serializer_class = SubtractBalanceSerializer

@@ -2,6 +2,7 @@ from rest_framework.exceptions import APIException
 
 
 class HoldOverBalanceException(APIException):
+    """Рэйзится при попытке увеличить холд выше баланса."""
     status_code = 400
     default_detail = 'Холд не может превышать баланс счёта абонента.'
     default_code = 'hold_over_balance'
