@@ -144,7 +144,8 @@ REST_FRAMEWORK = {
         'api.renderers.ApiRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
     ],
-    'EXCEPTION_HANDLER': 'api.renderers.custom_exception_handler'
+    'EXCEPTION_HANDLER': 'api.renderers.custom_exception_handler',
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json'
 }
 
 

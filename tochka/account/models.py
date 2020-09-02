@@ -25,3 +25,4 @@ class Account(models.Model):
 
     class Meta:
         db_table = 'account'
+        app_label = 'account'
