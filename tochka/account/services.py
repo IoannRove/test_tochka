@@ -55,5 +55,5 @@ def add_account_hold_and_call_subtract_account_balance(account, hold):
     :return: account
     """
     account = add_account_hold(account, hold)
-    # call_subtract_account_balance.apply_async((account.uuid,), eta=datetime.utcnow() + timedelta(minutes=10))
+    call_subtract_account_balance.apply_async((account.uuid,), eta=datetime.utcnow() + timedelta(minutes=10))
     return account
